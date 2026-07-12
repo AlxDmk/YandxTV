@@ -2,8 +2,8 @@ package com.alxdmk.yandxtv.presentation.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.data.repository.SiteRepository
 import com.alxdmk.yandxtv.domain.model.Site
+import com.alxdmk.yandxtv.domain.repository.SiteRepository
 import com.alxdmk.yandxtv.util.UrlUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -11,18 +11,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class EditSiteUiState(
+    val isEditMode: Boolean = false,
     val title: String = "",
+    val titleError: String? = null,
     val url: String = "",
+    val urlError: String? = null,
     val description: String = "",
     val iconLabel: String = "",
     val colorHex: String = "#1565C0",
     val useDesktopUserAgent: Boolean = false,
     val allowAutofill: Boolean = true,
-    val titleError: String? = null,
-    val urlError: String? = null,
     val isSaving: Boolean = false,
-    val savedId: Long? = null,
-    val isEditMode: Boolean = false
+    val savedId: Long? = null
 )
 
 @HiltViewModel
@@ -38,39 +38,55 @@ class EditSiteViewModel @Inject constructor(
             val site = siteRepository.getSiteById(siteId) ?: return@launch
             _uiState.update {
                 it.copy(
+                    isEditMode = true,
                     title = site.title,
                     url = site.url,
                     description = site.description,
                     iconLabel = site.iconLabel,
                     colorHex = site.colorHex,
                     useDesktopUserAgent = site.useDesktopUserAgent,
-                    allowAutofill = site.allowAutofill,
-                    isEditMode = true
+                    allowAutofill = site.allowAutofill
                 )
             }
         }
     }
 
-    fun onTitleChange(v: String) = _uiState.update { it.copy(title = v, titleError = null) }
-    fun onUrlChange(v: String) = _uiState.update { it.copy(url = v, urlError = null) }
-    fun onDescriptionChange(v: String) = _uiState.update { it.copy(description = v) }
-    fun onIconLabelChange(v: String) = _uiState.update { it.copy(iconLabel = v.take(2)) }
-    fun onColorHexChange(v: String) = _uiState.update { it.copy(colorHex = v) }
-    fun onDesktopUaToggle() = _uiState.update { it.copy(useDesktopUserAgent = !it.useDesktopUserAgent) }
-    fun onAutofillToggle() = _uiState.update { it.copy(allowAutofill = !it.allowAutofill) }
+    fun onTitleChange(value: String) {
+        _uiState.update { it.copy(title = value, titleError = null) }
+    }
+
+    fun onUrlChange(value: String) {
+        _uiState.update { it.copy(url = value, urlError = null) }
+    }
+
+    fun onDescriptionChange(value: String) {
+        _uiState.update { it.copy(description = value) }
+    }
+
+    fun onIconLabelChange(value: String) {
+        _uiState.update { it.copy(iconLabel = value.take(2)) }
+    }
+
+    fun onDesktopUaToggle() {
+        _uiState.update { it.copy(useDesktopUserAgent = !it.useDesktopUserAgent) }
+    }
+
+    fun onAutofillToggle() {
+        _uiState.update { it.copy(allowAutofill = !it.allowAutofill) }
+    }
 
     fun saveSite(existingSiteId: Long?) {
         val state = _uiState.value
         var hasError = false
 
         if (state.title.isBlank()) {
-            _uiState.update { it.copy(titleError = "Название не может быть пустым") }
+            _uiState.update { it.copy(titleError = "Введите название") }
             hasError = true
         }
 
         val normalizedUrl = UrlUtils.normalizeUrl(state.url)
         if (normalizedUrl == null) {
-            _uiState.update { it.copy(urlError = "Введите корректный URL (например: example.com)") }
+            _uiState.update { it.copy(urlError = "Введите корректный URL (например https://example.com)") }
             hasError = true
         }
 
@@ -86,10 +102,16 @@ class EditSiteViewModel @Inject constructor(
                 iconLabel = state.iconLabel.trim(),
                 colorHex = state.colorHex,
                 useDesktopUserAgent = state.useDesktopUserAgent,
-                allowAutofill = state.allowAutofill
+                allowAutofill = state.allowAutofill,
+                hasCredentials = false
             )
-            val id = siteRepository.saveSite(site)
-            _uiState.update { it.copy(isSaving = false, savedId = id) }
+            val savedId = if (existingSiteId != null && existingSiteId != 0L) {
+                siteRepository.updateSite(site)
+                existingSiteId
+            } else {
+                siteRepository.insertSite(site)
+            }
+            _uiState.update { it.copy(isSaving = false, savedId = savedId) }
         }
     }
 }

@@ -2,10 +2,10 @@ package com.alxdmk.yandxtv.presentation.credentials
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.data.repository.CredentialRepository
-import com.alxdmk.yandxtv.data.repository.SiteRepository
 import com.alxdmk.yandxtv.domain.model.Credential
 import com.alxdmk.yandxtv.domain.model.Site
+import com.alxdmk.yandxtv.domain.repository.CredentialRepository
+import com.alxdmk.yandxtv.domain.repository.SiteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,8 +17,9 @@ data class CredentialsUiState(
     val password: String = "",
     val note: String = "",
     val passwordVisible: Boolean = false,
-    val isSaved: Boolean = false,
-    val hasExistingCredentials: Boolean = false
+    val hasExistingCredentials: Boolean = false,
+    val isSaving: Boolean = false,
+    val isSaved: Boolean = false
 )
 
 @HiltViewModel
@@ -33,7 +34,7 @@ class CredentialsViewModel @Inject constructor(
     fun loadForSite(siteId: Long) {
         viewModelScope.launch {
             val site = siteRepository.getSiteById(siteId)
-            val existing = credentialRepository.getCredential(siteId)
+            val existing = credentialRepository.getCredentials(siteId)
             _uiState.update {
                 it.copy(
                     site = site,
@@ -46,26 +47,41 @@ class CredentialsViewModel @Inject constructor(
         }
     }
 
-    fun onUsernameChange(v: String) = _uiState.update { it.copy(username = v) }
-    fun onPasswordChange(v: String) = _uiState.update { it.copy(password = v) }
-    fun onNoteChange(v: String) = _uiState.update { it.copy(note = v) }
+    fun onUsernameChange(value: String) = _uiState.update { it.copy(username = value) }
+    fun onPasswordChange(value: String) = _uiState.update { it.copy(password = value) }
+    fun onNoteChange(value: String) = _uiState.update { it.copy(note = value) }
     fun togglePasswordVisible() = _uiState.update { it.copy(passwordVisible = !it.passwordVisible) }
 
     fun saveCredentials(siteId: Long) {
-        val state = _uiState.value
-        credentialRepository.saveCredential(
-            Credential(
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true) }
+            val credential = Credential(
                 siteId = siteId,
-                username = state.username,
-                password = state.password,
-                note = state.note
+                username = _uiState.value.username,
+                password = _uiState.value.password,
+                note = _uiState.value.note
             )
-        )
-        _uiState.update { it.copy(isSaved = true, hasExistingCredentials = true) }
+            credentialRepository.saveCredentials(credential)
+            // Update hasCredentials flag on site
+            siteRepository.getSiteById(siteId)?.let { site ->
+                siteRepository.updateSite(site.copy(hasCredentials = true))
+            }
+            _uiState.update { it.copy(isSaving = false, isSaved = true) }
+        }
     }
 
     fun deleteCredentials(siteId: Long) {
-        credentialRepository.deleteCredential(siteId)
-        _uiState.update { it.copy(username = "", password = "", note = "", hasExistingCredentials = false) }
+        viewModelScope.launch {
+            credentialRepository.deleteCredentials(siteId)
+            siteRepository.getSiteById(siteId)?.let { site ->
+                siteRepository.updateSite(site.copy(hasCredentials = false))
+            }
+            _uiState.update {
+                it.copy(
+                    username = "", password = "", note = "",
+                    hasExistingCredentials = false, isSaved = true
+                )
+            }
+        }
     }
 }

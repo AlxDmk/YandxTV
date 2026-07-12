@@ -2,80 +2,70 @@ package com.alxdmk.yandxtv.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.data.repository.SiteRepository
 import com.alxdmk.yandxtv.domain.model.Site
-import com.alxdmk.yandxtv.util.CatalogExporter
-import com.alxdmk.yandxtv.util.DemoData
+import com.alxdmk.yandxtv.domain.repository.CredentialRepository
+import com.alxdmk.yandxtv.domain.repository.SiteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 data class HomeUiState(
     val sites: List<Site> = emptyList(),
     val isLoading: Boolean = true,
-    val exportJson: String? = null,
-    val importError: String? = null,
-    val importSuccess: Boolean = false
+    val exportJson: String? = null
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val siteRepository: SiteRepository
+    private val siteRepository: SiteRepository,
+    private val credentialRepository: CredentialRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        loadSites()
+        observeSites()
     }
 
-    private fun loadSites() {
+    private fun observeSites() {
         viewModelScope.launch {
-            siteRepository.getAllSites()
-                .onStart { _uiState.update { it.copy(isLoading = true) } }
-                .collect { sites ->
-                    if (sites.isEmpty() && siteRepository.getSiteCount() == 0) {
-                        seedDemoData()
-                    } else {
-                        _uiState.update { it.copy(sites = sites, isLoading = false) }
-                    }
-                }
-        }
-    }
-
-    private suspend fun seedDemoData() {
-        DemoData.demoCatalog.forEach { site ->
-            siteRepository.saveSite(site)
+            siteRepository.getAllSites().collect { sites ->
+                _uiState.update { it.copy(sites = sites, isLoading = false) }
+            }
         }
     }
 
     fun deleteSite(siteId: Long) {
         viewModelScope.launch {
+            credentialRepository.deleteCredentials(siteId)
             siteRepository.deleteSite(siteId)
         }
     }
 
     fun exportCatalog() {
         viewModelScope.launch {
-            val json = CatalogExporter.exportToJson(_uiState.value.sites)
+            val sites = siteRepository.getAllSitesOnce()
+            val exportData = sites.map { site ->
+                mapOf(
+                    "title" to site.title,
+                    "url" to site.url,
+                    "description" to site.description,
+                    "iconLabel" to site.iconLabel,
+                    "colorHex" to site.colorHex,
+                    "useDesktopUserAgent" to site.useDesktopUserAgent.toString(),
+                    "allowAutofill" to site.allowAutofill.toString()
+                )
+            }
+            val json = Json { prettyPrint = true }.encodeToString(exportData)
             _uiState.update { it.copy(exportJson = json) }
         }
     }
 
-    fun importCatalog(json: String) {
-        viewModelScope.launch {
-            val sites = CatalogExporter.importFromJson(json)
-            if (sites == null) {
-                _uiState.update { it.copy(importError = "Неверный формат файла") }
-            } else {
-                sites.forEach { siteRepository.saveSite(it) }
-                _uiState.update { it.copy(importSuccess = true) }
-            }
-        }
+    fun clearExport() {
+        _uiState.update { it.copy(exportJson = null) }
     }
-
-    fun clearExport() = _uiState.update { it.copy(exportJson = null) }
-    fun clearImportResult() = _uiState.update { it.copy(importError = null, importSuccess = false) }
 }
