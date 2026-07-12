@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YandxTV</string>
+    <string name="home_title">Мой каталог</string>
+    <string name="add_site">Добавить сайт</string>
+    <string name="edit_site">Редактировать</string>
+    <string name="delete_site">Удалить</string>
+    <string name="settings">Настройки</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="back">Назад</string>
+</resources>
