@@ -1,68 +1,89 @@
 package com.alxdmk.yandxtv.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.alxdmk.yandxtv.presentation.credentials.CredentialsScreen
+import com.alxdmk.yandxtv.presentation.edit.EditSiteScreen
+import com.alxdmk.yandxtv.presentation.home.HomeScreen
+import com.alxdmk.yandxtv.presentation.settings.SettingsScreen
+import com.alxdmk.yandxtv.presentation.settings.SettingsViewModel
+import com.alxdmk.yandxtv.presentation.viewer.SiteViewerScreen
+import com.alxdmk.yandxtv.ui.theme.YandxTvTheme
 import com.alxdmk.yandxtv.domain.model.AppTheme
-import com.alxdmk.yandxtv.presentation.navigation.Screen
-import com.alxdmk.yandxtv.presentation.screens.credential.CredentialEditorScreen
-import com.alxdmk.yandxtv.presentation.screens.home.HomeScreen
-import com.alxdmk.yandxtv.presentation.screens.settings.SettingsScreen
-import com.alxdmk.yandxtv.presentation.screens.siteeditor.SiteEditorScreen
-import com.alxdmk.yandxtv.presentation.screens.viewer.SiteViewerScreen
-import com.alxdmk.yandxtv.presentation.theme.YandxTvTheme
-import com.alxdmk.yandxtv.presentation.viewmodel.SettingsViewModel
 
 @Composable
-fun YandxTvApp() {
-    val settingsViewModel: SettingsViewModel = hiltViewModel()
+fun YandxTvApp(settingsViewModel: SettingsViewModel = hiltViewModel()) {
     val settings by settingsViewModel.settings.collectAsState()
     val navController = rememberNavController()
 
-    YandxTvTheme(theme = settings.theme) {
+    YandxTvTheme(appTheme = settings.theme) {
         NavHost(navController = navController, startDestination = Screen.Home.route) {
+
             composable(Screen.Home.route) {
                 HomeScreen(
-                    onOpenSite = { siteId -> navController.navigate(Screen.SiteViewer.createRoute(siteId)) },
-                    onAddSite = { navController.navigate(Screen.SiteEditor.createRoute()) },
-                    onEditSite = { siteId -> navController.navigate(Screen.SiteEditor.createRoute(siteId)) },
+                    onOpenSite = { id -> navController.navigate(Screen.SiteViewer.route(id)) },
+                    onAddSite = { navController.navigate(Screen.AddSite.route) },
+                    onEditSite = { id -> navController.navigate(Screen.EditSite.route(id)) },
                     onSettings = { navController.navigate(Screen.Settings.route) }
                 )
             }
-            composable(
-                route = Screen.SiteEditor.route,
-                arguments = listOf(navArgument(Screen.SiteEditor.ARG_SITE_ID) {
-                    type = NavType.StringType; nullable = true; defaultValue = null
-                })
-            ) { backStack ->
-                val siteId = backStack.arguments?.getString(Screen.SiteEditor.ARG_SITE_ID)?.toLongOrNull()
-                SiteEditorScreen(siteId = siteId, onNavigateUp = { navController.navigateUp() })
-            }
-            composable(
-                route = Screen.SiteViewer.route,
-                arguments = listOf(navArgument(Screen.SiteViewer.ARG_SITE_ID) { type = NavType.LongType })
-            ) { backStack ->
-                val siteId = backStack.arguments!!.getLong(Screen.SiteViewer.ARG_SITE_ID)
-                SiteViewerScreen(
-                    siteId = siteId,
-                    onNavigateUp = { navController.navigateUp() },
-                    onEditCredentials = { navController.navigate(Screen.CredentialEditor.createRoute(siteId)) }
+
+            composable(Screen.AddSite.route) {
+                EditSiteScreen(
+                    siteId = null,
+                    onSaved = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() }
                 )
             }
+
             composable(
-                route = Screen.CredentialEditor.route,
-                arguments = listOf(navArgument(Screen.CredentialEditor.ARG_SITE_ID) { type = NavType.LongType })
+                route = Screen.EditSite.route,
+                arguments = listOf(navArgument("siteId") { type = NavType.LongType })
             ) { backStack ->
-                val siteId = backStack.arguments!!.getLong(Screen.CredentialEditor.ARG_SITE_ID)
-                CredentialEditorScreen(siteId = siteId, onNavigateUp = { navController.navigateUp() })
+                val siteId = backStack.arguments?.getLong("siteId") ?: 0L
+                EditSiteScreen(
+                    siteId = siteId,
+                    onSaved = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() }
+                )
             }
+
+            composable(
+                route = Screen.SiteViewer.route,
+                arguments = listOf(navArgument("siteId") { type = NavType.LongType })
+            ) { backStack ->
+                val siteId = backStack.arguments?.getLong("siteId") ?: 0L
+                SiteViewerScreen(
+                    siteId = siteId,
+                    onBack = { navController.popBackStack() },
+                    onSaveCredentials = { id ->
+                        navController.navigate(Screen.Credentials.route(id))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.Credentials.route,
+                arguments = listOf(navArgument("siteId") { type = NavType.LongType })
+            ) { backStack ->
+                val siteId = backStack.arguments?.getLong("siteId") ?: 0L
+                CredentialsScreen(
+                    siteId = siteId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.Settings.route) {
-                SettingsScreen(onNavigateUp = { navController.navigateUp() })
+                SettingsScreen(
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }
