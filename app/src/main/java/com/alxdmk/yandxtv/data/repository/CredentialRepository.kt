@@ -9,8 +9,8 @@ import javax.inject.Singleton
 class CredentialRepository @Inject constructor(
     private val storage: EncryptedCredentialStorage
 ) {
-    fun load(siteId: Long): Credential? = storage.loadCredential(siteId)
-    fun save(credential: Credential) = storage.saveCredential(credential)
-    fun delete(siteId: Long) = storage.deleteCredential(siteId)
-    fun has(siteId: Long): Boolean = storage.hasCredential(siteId)
+    fun getCredential(siteId: Long): Credential? = storage.getCredential(siteId)
+    fun saveCredential(credential: Credential) = storage.saveCredential(credential)
+    fun deleteCredential(siteId: Long) = storage.deleteCredential(siteId)
+    fun hasCredential(siteId: Long): Boolean = storage.hasCredential(siteId)
 }

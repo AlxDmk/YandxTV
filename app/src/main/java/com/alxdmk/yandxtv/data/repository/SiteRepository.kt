@@ -14,29 +14,25 @@ class SiteRepository @Inject constructor(
     private val siteDao: SiteDao,
     private val credentialStorage: EncryptedCredentialStorage
 ) {
-    val sites: Flow<List<Site>> = siteDao.getAllSites().map { entities ->
-        entities.map { entity ->
-            entity.toDomain(hasCredentials = credentialStorage.hasCredential(entity.id))
+    fun getAllSites(): Flow<List<Site>> = siteDao.getAllSites().map { entities ->
+        entities.map { it.toDomain(credentialStorage.hasCredential(it.id)) }
+    }
+
+    suspend fun getSiteById(id: Long): Site? =
+        siteDao.getSiteById(id)?.toDomain(credentialStorage.hasCredential(id))
+
+    suspend fun saveSite(site: Site): Long {
+        return if (site.id == 0L) {
+            siteDao.insertSite(site.toEntity())
+        } else {
+            siteDao.updateSite(site.toEntity())
+            site.id
         }
     }
 
-    suspend fun getSiteById(id: Long): Site? {
-        return siteDao.getSiteById(id)?.toDomain(
-            hasCredentials = credentialStorage.hasCredential(id)
-        )
-    }
-
-    suspend fun insertSite(site: Site): Long {
-        return siteDao.insertSite(site.toEntity())
-    }
-
-    suspend fun updateSite(site: Site) {
-        siteDao.updateSite(site.toEntity())
-    }
-
-    suspend fun deleteSite(site: Site) {
-        siteDao.deleteSiteById(site.id)
-        credentialStorage.deleteCredential(site.id)
+    suspend fun deleteSite(siteId: Long) {
+        siteDao.deleteSiteById(siteId)
+        credentialStorage.deleteCredential(siteId)
     }
 
     suspend fun getSiteCount(): Int = siteDao.getSiteCount()

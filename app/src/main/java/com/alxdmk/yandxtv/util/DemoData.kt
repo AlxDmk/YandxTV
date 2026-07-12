@@ -3,34 +3,35 @@ package com.alxdmk.yandxtv.util
 import com.alxdmk.yandxtv.domain.model.Site
 
 /**
- * Neutral demo catalogue — three publicly known, openly accessible example sites.
- * No proprietary brands, no piracy, no DRM circumvention.
+ * Demo catalog seeded on first launch.
+ * Contains only neutral, publicly available sites.
+ * User can delete or modify these at any time.
  */
 object DemoData {
-    val sites = listOf(
+    val demoCatalog = listOf(
         Site(
-            title = "IANA Example Domain",
+            title = "Example Domain",
             url = "https://example.org",
-            description = "Стандартный демо-домен IANA, удобный для теста WebView",
-            iconLabel = "EX",
+            description = "Официальный пример домена IANA",
+            iconLabel = "E",
             colorHex = "#1565C0",
             sortOrder = 0
         ),
         Site(
             title = "Wikipedia",
             url = "https://ru.wikipedia.org",
-            description = "Свободная энциклопедия на русском языке",
-            iconLabel = "WP",
+            description = "Свободная энциклопедия",
+            iconLabel = "W",
             colorHex = "#424242",
             useDesktopUserAgent = true,
             sortOrder = 1
         ),
         Site(
-            title = "Hacker News",
-            url = "https://news.ycombinator.com",
-            description = "Новости и дискуссии из мира IT и стартапов",
-            iconLabel = "HN",
-            colorHex = "#E65100",
+            title = "Archive.org",
+            url = "https://archive.org",
+            description = "Интернет-архив — бесплатные книги, фильмы, музыка",
+            iconLabel = "A",
+            colorHex = "#1B5E20",
             sortOrder = 2
         )
     )
