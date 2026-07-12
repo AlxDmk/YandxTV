@@ -38,16 +38,29 @@ class SiteRepository @Inject constructor(
     suspend fun getSiteCount(): Int = siteDao.getSiteCount()
 
     private fun SiteEntity.toDomain(hasCredentials: Boolean) = Site(
-        id = id, title = title, url = url, description = description,
-        iconLabel = iconLabel, colorHex = colorHex,
-        useDesktopUserAgent = useDesktopUserAgent, allowAutofill = allowAutofill,
-        hasCredentials = hasCredentials, sortOrder = sortOrder, createdAt = createdAt
+        id = id,
+        title = title,
+        url = url,
+        description = description,
+        iconLabel = iconLabel,
+        colorHex = colorHex,
+        useDesktopUserAgent = useDesktopUserAgent,
+        allowAutofill = allowAutofill,
+        hasCredentials = hasCredentials,
+        sortOrder = sortOrder,
+        createdAt = createdAt
     )
 
     private fun Site.toEntity() = SiteEntity(
-        id = id, title = title, url = url, description = description,
-        iconLabel = iconLabel, colorHex = colorHex,
-        useDesktopUserAgent = useDesktopUserAgent, allowAutofill = allowAutofill,
-        sortOrder = sortOrder, createdAt = createdAt
+        id = id,
+        title = title,
+        url = url,
+        description = description,
+        iconLabel = iconLabel,
+        colorHex = colorHex,
+        useDesktopUserAgent = useDesktopUserAgent,
+        allowAutofill = allowAutofill,
+        sortOrder = sortOrder,
+        createdAt = createdAt
     )
 }

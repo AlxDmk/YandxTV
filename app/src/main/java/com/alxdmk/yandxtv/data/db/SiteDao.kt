@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SiteDao {
+
     @Query("SELECT * FROM sites ORDER BY sortOrder ASC, createdAt ASC")
     fun getAllSites(): Flow<List<SiteEntity>>
 

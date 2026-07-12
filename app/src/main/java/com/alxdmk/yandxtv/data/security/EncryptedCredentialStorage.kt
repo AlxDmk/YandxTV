@@ -11,6 +11,9 @@ import javax.inject.Singleton
 /**
  * Secure credential storage using Android Keystore + EncryptedSharedPreferences.
  * Keys never leave the device. Credentials are AES-256-GCM encrypted at rest.
+ *
+ * ⚠️ NOTE: On API < 23, MasterKey falls back to a less secure store.
+ * This app targets API 21 minimum for broad TV compatibility.
  */
 @Singleton
 class EncryptedCredentialStorage @Inject constructor(
@@ -20,6 +23,7 @@ class EncryptedCredentialStorage @Inject constructor(
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
+
         EncryptedSharedPreferences.create(
             context,
             PREFS_FILE_NAME,
@@ -57,8 +61,9 @@ class EncryptedCredentialStorage @Inject constructor(
         }
     }
 
-    fun hasCredential(siteId: Long): Boolean =
-        sharedPreferences.contains(usernameKey(siteId))
+    fun hasCredential(siteId: Long): Boolean {
+        return sharedPreferences.contains(usernameKey(siteId))
+    }
 
     private fun usernameKey(siteId: Long) = "cred_${siteId}_username"
     private fun passwordKey(siteId: Long) = "cred_${siteId}_password"

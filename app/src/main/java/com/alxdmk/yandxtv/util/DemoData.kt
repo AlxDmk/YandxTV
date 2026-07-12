@@ -3,7 +3,7 @@ package com.alxdmk.yandxtv.util
 import com.alxdmk.yandxtv.domain.model.Site
 
 /**
- * Demo catalog seeded on first launch.
+ * Demo catalog for first launch.
  * Contains only neutral, publicly available sites.
  * User can delete or modify these at any time.
  */

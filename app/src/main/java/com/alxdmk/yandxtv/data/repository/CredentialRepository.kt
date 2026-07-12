@@ -10,7 +10,10 @@ class CredentialRepository @Inject constructor(
     private val storage: EncryptedCredentialStorage
 ) {
     fun getCredential(siteId: Long): Credential? = storage.getCredential(siteId)
+
     fun saveCredential(credential: Credential) = storage.saveCredential(credential)
+
     fun deleteCredential(siteId: Long) = storage.deleteCredential(siteId)
+
     fun hasCredential(siteId: Long): Boolean = storage.hasCredential(siteId)
 }
