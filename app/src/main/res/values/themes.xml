@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.YandxTV" parent="android:Theme.Material.Light.NoTitleBar.Fullscreen" />
+    <!-- Theme.AppCompat.NoActionBar is the correct base theme for
+         Jetpack Compose TV apps targeting compileSdk 33+.
+         android:Theme.Material.Light.NoTitleBar.Fullscreen was removed
+         from the public SDK in API 33 and causes AAPT linking errors. -->
+    <style name="Theme.YandxTV" parent="Theme.AppCompat.NoActionBar" />
 </resources>
