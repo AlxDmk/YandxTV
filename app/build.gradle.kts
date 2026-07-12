@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.compose.material3)
     debugImplementation(libs.compose.ui.tooling)
 
+    // AppCompat (required for Theme.AppCompat.NoActionBar in themes.xml)
+    implementation(libs.androidx.appcompat)
+
     // Activity & Lifecycle
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
