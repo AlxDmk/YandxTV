@@ -1,10 +1,8 @@
 package com.alxdmk.yandxtv.di
 
 import android.content.Context
-import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.alxdmk.yandxtv.data.db.AppDatabase
 import com.alxdmk.yandxtv.data.repository.CredentialRepositoryImpl
 import com.alxdmk.yandxtv.data.repository.SettingsRepositoryImpl
 import com.alxdmk.yandxtv.data.repository.SiteRepositoryImpl
@@ -18,24 +16,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-
-    @Provides
-    @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "yandxtv.db"
-        ).build()
-    }
-
-    @Provides
-    fun provideSiteDao(db: AppDatabase) = db.siteDao()
-}
 
 @Module
 @InstallIn(SingletonComponent::class)
