@@ -14,13 +14,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alxdmk.yandxtv.BuildConfig
 import com.alxdmk.yandxtv.domain.model.AppTheme
+import com.alxdmk.yandxtv.domain.model.UserSettings
 
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val settings by viewModel.settings.collectAsState()
+    val settings: UserSettings by viewModel.settings.collectAsState()
 
     Column(
         modifier = Modifier

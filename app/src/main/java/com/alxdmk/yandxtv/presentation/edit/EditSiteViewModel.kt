@@ -109,7 +109,7 @@ class EditSiteViewModel @Inject constructor(
                 siteRepository.updateSite(site)
                 existingSiteId
             } else {
-                siteRepository.insertSite(site)
+                siteRepository.saveSite(site)
             }
             _uiState.update { it.copy(isSaving = false, savedId = savedId) }
         }

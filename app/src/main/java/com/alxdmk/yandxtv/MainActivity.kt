@@ -3,11 +3,8 @@ package com.alxdmk.yandxtv
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.alxdmk.yandxtv.domain.model.AppTheme
 import com.alxdmk.yandxtv.domain.repository.SettingsRepository
 import com.alxdmk.yandxtv.navigation.YandxTvNavGraph
 import com.alxdmk.yandxtv.ui.theme.YandxTvTheme
@@ -28,13 +25,7 @@ class MainActivity : ComponentActivity() {
             val settings by settingsRepository.getSettings()
                 .collectAsState(initial = runBlocking { settingsRepository.getSettings().first() })
 
-            val darkTheme = when (settings.theme) {
-                AppTheme.LIGHT -> false
-                AppTheme.DARK -> true
-                AppTheme.AUTO -> isSystemInDarkTheme()
-            }
-
-            YandxTvTheme(darkTheme = darkTheme) {
+            YandxTvTheme(appTheme = settings.theme) {
                 YandxTvNavGraph()
             }
         }

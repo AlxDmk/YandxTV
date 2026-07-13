@@ -2,8 +2,8 @@ package com.alxdmk.yandxtv.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.domain.model.AppSettings
 import com.alxdmk.yandxtv.domain.model.AppTheme
+import com.alxdmk.yandxtv.domain.model.UserSettings
 import com.alxdmk.yandxtv.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -15,12 +15,12 @@ class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    val settings: StateFlow<AppSettings> = settingsRepository
+    val settings: StateFlow<UserSettings> = settingsRepository
         .getSettings()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = AppSettings()
+            initialValue = UserSettings()
         )
 
     fun setTheme(theme: AppTheme) {
