@@ -1,10 +1,12 @@
 package com.alxdmk.yandxtv.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.alxdmk.yandxtv.domain.model.AppTheme
 
 private val LightColors = lightColorScheme(
     primary = Color(0xFF1565C0),
@@ -30,9 +32,14 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun YandxTvTheme(
-    darkTheme: Boolean = false,
+    appTheme: AppTheme = AppTheme.AUTO,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when (appTheme) {
+        AppTheme.LIGHT -> false
+        AppTheme.DARK  -> true
+        AppTheme.AUTO  -> isSystemInDarkTheme()
+    }
     val colorScheme = if (darkTheme) DarkColors else LightColors
     MaterialTheme(
         colorScheme = colorScheme,
