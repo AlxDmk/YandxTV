@@ -2,7 +2,6 @@ package com.alxdmk.yandxtv.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,7 +19,7 @@ import com.alxdmk.yandxtv.domain.model.AppTheme
 
 @Composable
 fun YandxTvApp(settingsViewModel: SettingsViewModel = hiltViewModel()) {
-    val settings by settingsViewModel.settings.collectAsState()
+    val settings = settingsViewModel.settings.collectAsState().value
     val navController = rememberNavController()
 
     YandxTvTheme(appTheme = settings.theme) {
