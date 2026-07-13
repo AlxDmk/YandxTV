@@ -2,8 +2,8 @@ package com.alxdmk.yandxtv.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.data.repository.SiteRepository
 import com.alxdmk.yandxtv.domain.model.Site
+import com.alxdmk.yandxtv.domain.repository.SiteRepository
 import com.alxdmk.yandxtv.util.UrlUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

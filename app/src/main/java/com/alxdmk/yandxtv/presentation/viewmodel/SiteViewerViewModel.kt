@@ -2,10 +2,10 @@ package com.alxdmk.yandxtv.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alxdmk.yandxtv.data.repository.CredentialRepository
-import com.alxdmk.yandxtv.data.repository.SiteRepository
 import com.alxdmk.yandxtv.domain.model.Credential
 import com.alxdmk.yandxtv.domain.model.Site
+import com.alxdmk.yandxtv.domain.repository.CredentialRepository
+import com.alxdmk.yandxtv.domain.repository.SiteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class SiteViewerViewModel @Inject constructor(
     fun loadSite(siteId: Long) {
         viewModelScope.launch {
             val site = siteRepository.getSiteById(siteId)
-            val cred = credentialRepository.getCredential(siteId)
+            val cred = credentialRepository.getCredentials(siteId)
             _state.update { it.copy(site = site, credential = cred, isDesktopUa = site?.useDesktopUserAgent ?: false, isLoading = false) }
         }
     }
