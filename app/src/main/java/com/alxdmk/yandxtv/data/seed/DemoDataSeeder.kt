@@ -77,6 +77,26 @@ class DemoDataSeeder @Inject constructor(
                 allowAutofill = false,
                 sortOrder = 6
             ),
+            SiteEntity(
+                title = "HDRozetka",
+                url = "https://fanfilmzerkalo.fun",
+                description = "HDR-контент и зеркало Rozetka",
+                iconLabel = "HDR",
+                colorHex = "#00ACC1",
+                useDesktopUserAgent = true,
+                allowAutofill = false,
+                sortOrder = 7
+            ),
+            SiteEntity(
+                title = "LostFilm",
+                url = "https://www.lostfilm.tv",
+                description = "Сериалы с профессиональным переводом",
+                iconLabel = "LF",
+                colorHex = "#37474F",
+                useDesktopUserAgent = true,
+                allowAutofill = true,
+                sortOrder = 8
+            ),
 
             // ── Музыка ────────────────────────────────────────────────────────
             SiteEntity(
@@ -87,7 +107,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#FFCC00",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 7
+                sortOrder = 9
             ),
             SiteEntity(
                 title = "VK Музыка",
@@ -97,7 +117,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#0077FF",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 8
+                sortOrder = 10
             ),
 
             // ── Новости и информация ──────────────────────────────────────────
@@ -109,7 +129,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#FF0000",
                 useDesktopUserAgent = true,
                 allowAutofill = false,
-                sortOrder = 9
+                sortOrder = 11
             ),
             SiteEntity(
                 title = "РБК",
@@ -119,7 +139,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#C62828",
                 useDesktopUserAgent = true,
                 allowAutofill = false,
-                sortOrder = 10
+                sortOrder = 12
             ),
             SiteEntity(
                 title = "Погода Яндекс",
@@ -129,7 +149,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#039BE5",
                 useDesktopUserAgent = true,
                 allowAutofill = false,
-                sortOrder = 11
+                sortOrder = 13
             ),
 
             // ── Социальные сети ───────────────────────────────────────────────
@@ -141,7 +161,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#0077FF",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 12
+                sortOrder = 14
             ),
             SiteEntity(
                 title = "Telegram Web",
@@ -151,7 +171,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#2CA5E0",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 13
+                sortOrder = 15
             ),
 
             // ── Спорт ─────────────────────────────────────────────────────────
@@ -163,7 +183,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#E53935",
                 useDesktopUserAgent = true,
                 allowAutofill = false,
-                sortOrder = 14
+                sortOrder = 16
             ),
             SiteEntity(
                 title = "Sports.ru",
@@ -173,7 +193,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#1B5E20",
                 useDesktopUserAgent = true,
                 allowAutofill = false,
-                sortOrder = 15
+                sortOrder = 17
             ),
 
             // ── Покупки ───────────────────────────────────────────────────────
@@ -185,7 +205,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#005BFF",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 16
+                sortOrder = 18
             ),
             SiteEntity(
                 title = "Wildberries",
@@ -195,7 +215,7 @@ class DemoDataSeeder @Inject constructor(
                 colorHex = "#CB11AB",
                 useDesktopUserAgent = true,
                 allowAutofill = true,
-                sortOrder = 17
+                sortOrder = 19
             )
         )
 
