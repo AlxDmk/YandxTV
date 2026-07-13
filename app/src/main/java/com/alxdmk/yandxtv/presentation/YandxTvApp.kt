@@ -2,12 +2,15 @@ package com.alxdmk.yandxtv.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.alxdmk.yandxtv.domain.model.AppTheme
+import com.alxdmk.yandxtv.domain.model.UserSettings
 import com.alxdmk.yandxtv.presentation.credentials.CredentialsScreen
 import com.alxdmk.yandxtv.presentation.edit.EditSiteScreen
 import com.alxdmk.yandxtv.presentation.home.HomeScreen
@@ -15,11 +18,10 @@ import com.alxdmk.yandxtv.presentation.settings.SettingsScreen
 import com.alxdmk.yandxtv.presentation.settings.SettingsViewModel
 import com.alxdmk.yandxtv.presentation.viewer.SiteViewerScreen
 import com.alxdmk.yandxtv.ui.theme.YandxTvTheme
-import com.alxdmk.yandxtv.domain.model.AppTheme
 
 @Composable
 fun YandxTvApp(settingsViewModel: SettingsViewModel = hiltViewModel()) {
-    val settings = settingsViewModel.settings.collectAsState().value
+    val settings by settingsViewModel.settings.collectAsState(initial = UserSettings())
     val navController = rememberNavController()
 
     YandxTvTheme(appTheme = settings.theme) {
