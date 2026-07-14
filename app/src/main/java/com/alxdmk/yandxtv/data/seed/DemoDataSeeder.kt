@@ -2,7 +2,8 @@ package com.alxdmk.yandxtv.data.seed
 
 import com.alxdmk.yandxtv.data.db.SiteDao
 import com.alxdmk.yandxtv.data.db.SiteEntity
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,9 +11,9 @@ import javax.inject.Singleton
 class DemoDataSeeder @Inject constructor(
     private val siteDao: SiteDao
 ) {
-    suspend fun seedIfEmpty() {
-        val existing = siteDao.getAllSites().first()
-        if (existing.isNotEmpty()) return
+    suspend fun seedIfEmpty() = withContext(Dispatchers.IO) {
+        // Используем suspend-запрос COUNT(*) — не Flow, не блокирует поток
+        if (siteDao.getSiteCount() > 0) return@withContext
 
         val preinstalledSites = listOf(
 

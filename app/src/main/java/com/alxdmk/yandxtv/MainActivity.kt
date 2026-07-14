@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Сидим предустановленные сайты при первом запуске
+        // Сидим предустановленные сайты при первом запуске (внутри сейдера withContext(IO))
         lifecycleScope.launch {
             demoDataSeeder.seedIfEmpty()
         }
